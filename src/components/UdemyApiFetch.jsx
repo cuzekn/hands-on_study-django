@@ -30,6 +30,18 @@ export const UdemyApiFetch = () => {
       });
   };
 
+  const deleteTask = () => {
+    axios
+      .delete(`http://127.0.0.1:8000/api/tasks/${id}/`, {
+        headers: {
+          Authorization: "Token 348c33a73b1ea526e03ff993aa1b330b02922fa7",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
   return (
     <div>
       <ul>
@@ -50,6 +62,9 @@ export const UdemyApiFetch = () => {
       <br />
       <button type="button" onClick={() => getTask()}>
         Get task
+      </button>
+      <button type="button" onClick={() => deleteTask()}>
+        Delete
       </button>
       <h3>
         {selectedTask.title} {selectedTask.id}
