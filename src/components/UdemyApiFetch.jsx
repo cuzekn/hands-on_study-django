@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 export const UdemyApiFetch = () => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState([]);
+  const [editedTask, setEditedTask] = useState({ id: "", title: "" });
   const [id, setId] = useState(1);
 
   useEffect(() => {
@@ -38,9 +39,33 @@ export const UdemyApiFetch = () => {
         },
       })
       .then((res) => {
-        setTasks(tasks.filter((task) => task.id !== id)); setSelectedTask([]);
+        setTasks(tasks.filter((task) => task.id !== id));
+        setSelectedTask([]);
       });
   };
+
+  const newTask = (task) => {
+    const data = {
+      title: task.title,
+    };
+
+    axios
+      .post(`http://127.0.0.1:8000/api/tasks/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Token 348c33a73b1ea526e03ff993aa1b330b02922fa7",
+        },
+      })
+      .then((res) => {
+        setTasks([...tasks, res.data]);
+      });
+  };
+
+  const handleInputChange = () => evt => {
+    const value = evt.target.value
+    const name = evt.target.name
+    setEditedTask({ ...editedTask, [name]: value })
+  }
 
   return (
     <div>
@@ -69,6 +94,9 @@ export const UdemyApiFetch = () => {
       <h3>
         {selectedTask.title} {selectedTask.id}
       </h3>
+
+      <input type="text" name="title" value={editedTask.title} onChange={handleInputChange()} placeholder="New task ?" required />
+      <button onClick={() => newTask(editedTask)}>Create</button>
     </div>
   );
 };
