@@ -61,11 +61,27 @@ export const UdemyApiFetch = () => {
       });
   };
 
-  const handleInputChange = () => evt => {
-    const value = evt.target.value
-    const name = evt.target.name
-    setEditedTask({ ...editedTask, [name]: value })
-  }
+  const editTask = (task) => {
+    axios
+      .put(`http://127.0.0.1:8000/api/tasks/${task.id}/`, task, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Token 348c33a73b1ea526e03ff993aa1b330b02922fa7",
+        },
+      })
+      .then((res) => {
+        setTasks(
+          tasks.map((task) => (task.id === editedTask.id ? res.data : task))
+        );
+        setEditedTask({ id: "", title: "" });
+      });
+  };
+
+  const handleInputChange = (evt) => {
+    const value = evt.target.value;
+    const name = evt.target.name;
+    setEditedTask({ ...editedTask, [name]: value });
+  };
 
   return (
     <div>
@@ -75,6 +91,9 @@ export const UdemyApiFetch = () => {
             {task.title} {task.id}
             <button onClick={() => deleteTask(task.id)}>
               <i class="fas fa-trash-alt"></i>
+            </button>
+            <button onClick={() => setEditedTask(task)}>
+              <i class="fas fa-pen"></i>
             </button>
           </li>
         ))}
@@ -94,9 +113,19 @@ export const UdemyApiFetch = () => {
       <h3>
         {selectedTask.title} {selectedTask.id}
       </h3>
-
-      <input type="text" name="title" value={editedTask.title} onChange={handleInputChange()} placeholder="New task ?" required />
-      <button onClick={() => newTask(editedTask)}>Create</button>
+      <input
+        type="text"
+        name="title"
+        value={editedTask.title}
+        onChange={(evt) => handleInputChange(evt)}
+        placeholder="New task ?"
+        required
+      />
+      {editedTask.id ? (
+        <button onClick={() => editTask(editedTask)}>Update</button>
+      ) : (
+        <button onClick={() => newTask(editedTask)}>Create</button>
+      )}
     </div>
   );
 };
