@@ -41,6 +41,9 @@ export const UdemyApiFetch = () => {
       .then((res) => {
         setTasks(tasks.filter((task) => task.id !== id));
         setSelectedTask([]);
+        if (editedTask.id === id) {
+          setEditedTask({ id: "", title: "" });
+        }
       });
   };
 
