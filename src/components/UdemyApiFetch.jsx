@@ -58,6 +58,7 @@ export const UdemyApiFetch = () => {
       })
       .then((res) => {
         setTasks([...tasks, res.data]);
+        setEditedTask({ id: "", title: "" });
       });
   };
 
